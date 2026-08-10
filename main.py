@@ -1,5 +1,6 @@
+from keep_alive import keep_alive
 import os
-from typing import Any
+from typing import Optional, Any
 
 import discord
 from discord.ext import commands
@@ -20,23 +21,24 @@ class AIBot(commands.AutoShardedBot):
     async def setup_hook(self) -> None:
         for cog in COMMANDS:
             cog_name = cog.split('.')[-1]
-            discord.client._log.info(f"Loaded Command {cog_name}")
-            await self.load_extension(f"{cog}")
+            discord.client.log.info(f'Loaded Command {cog_name}')
+            await self.load_extension(f'{cog}')
         for cog in EVENT_HANDLERS:
             cog_name = cog.split('.')[-1]
-            discord.client._log.info(f"Loaded Event Handler {cog_name}")
-            await self.load_extension(f"{cog}")
+            discord.client.log.info(f'Loaded Event Handler {cog_name}')
+            await self.load_extension(f'{cog}')
         print('If syncing commands is taking longer than usual you are being ratelimited')
         await self.tree.sync()
-        discord.client._log.info(f"Loaded {len(self.commands)} commands")
+        discord.client.log.info(f'Loaded {len(self.commands)} commands')
 
 bot = AIBot(command_prefix=[], intents=discord.Intents.all(), help_command=None)
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 if TOKEN is None:
-    print("\033[31mLooks like you haven't properly set up a Discord token environment variable in the `.env` file. (Secrets on replit)\033[0m")
-    print("\033[33mNote: If you don't have a Discord token environment variable, you will have to input it every time. \033[0m")
+    print("\033[31mLooks like you haven't properly set up a Discord token environment variable in the `.env` file. (Secrets)")
+    print("\033[33mNote: If you don't have a Discord token environment variable, you will have to input it every time.\033[0m")
     TOKEN = input("Please enter your Discord token: ")
 
+keep_alive()
 bot.run(TOKEN, reconnect=True)
