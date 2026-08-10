@@ -1,4 +1,3 @@
-from keep_alive import keep_alive
 import os
 from typing import Optional, Any
 
@@ -40,5 +39,4 @@ if TOKEN is None:
     print("\033[33mNote: If you don't have a Discord token environment variable, you will have to input it every time.\033[0m")
     TOKEN = input("Please enter your Discord token: ")
 
-keep_alive()
 bot.run(TOKEN, reconnect=True)
