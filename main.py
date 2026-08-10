@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from cogs import COMMANDS, EVENT_HANDLERS
 from bot_utilities.config_loader import config
 
-load_dotenv('.env')
+load_dotenv()
 
 class AIBot(commands.AutoShardedBot):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -32,11 +32,10 @@ class AIBot(commands.AutoShardedBot):
 
 bot = AIBot(command_prefix=[], intents=discord.Intents.all(), help_command=None)
 
-TOKEN = os.getenv('DISCORD_TOKEN')
+# Lấy trực tiếp token từ biến môi trường của Railway, không dùng input() để tránh crash
+TOKEN = os.getenv('DISCORD_TOKEN') or os.environ.get('DISCORD_TOKEN')
 
-if TOKEN is None:
-    print("\033[31mLooks like you haven't properly set up a Discord token environment variable in the `.env` file. (Secrets)")
-    print("\033[33mNote: If you don't have a Discord token environment variable, you will have to input it every time.\033[0m")
-    TOKEN = input("Please enter your Discord token: ")
+if not TOKEN:
+    raise ValueError("LỖI: Chưa cấu hình biến DISCORD_TOKEN trong phần Variables của Railway!")
 
 bot.run(TOKEN, reconnect=True)
