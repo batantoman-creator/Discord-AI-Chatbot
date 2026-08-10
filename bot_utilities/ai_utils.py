@@ -4,12 +4,13 @@ import time
 import os
 import random
 import json
+import asyncio
 from langdetect import detect
 from gtts import gTTS
 from urllib.parse import quote
 from bot_utilities.config_loader import load_current_language, config
 from openai import AsyncOpenAI
-from duckduckgo_search import AsyncDDGS
+from ddgs import DDGS
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -88,8 +89,9 @@ async def duckduckgotool(query) -> str:
     if config['INTERNET_ACCESS']:
         return "internet access has been disabled by user"
     blob = ''
-    results = await AsyncDDGS(proxy=None).text(query, max_results=6)
     try:
+        # DDGS giờ chỉ chạy đồng bộ (sync), nên chạy trong thread riêng để không chặn bot
+        results = await asyncio.to_thread(DDGS().text, query, max_results=6)
         for index, result in enumerate(results[:6]):  # Limiting to 6 results
             blob += f'[{index}] Title : {result["title"]}\nSnippet : {result["body"]}\n\n\n Provide a cohesive response base on provided Search results'
     except Exception as e:
