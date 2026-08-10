@@ -20,15 +20,15 @@ class AIBot(commands.AutoShardedBot):
     async def setup_hook(self) -> None:
         for cog in COMMANDS:
             cog_name = cog.split('.')[-1]
-            discord.client.log.info(f'Loaded Command {cog_name}')
+            print(f'Loaded Command {cog_name}')
             await self.load_extension(f'{cog}')
         for cog in EVENT_HANDLERS:
             cog_name = cog.split('.')[-1]
-            discord.client.log.info(f'Loaded Event Handler {cog_name}')
+            print(f'Loaded Event Handler {cog_name}')
             await self.load_extension(f'{cog}')
         print('If syncing commands is taking longer than usual you are being ratelimited')
         await self.tree.sync()
-        discord.client.log.info(f'Loaded {len(self.commands)} commands')
+        print(f'Loaded {len(self.commands)} commands')
 
 bot = AIBot(command_prefix=[], intents=discord.Intents.all(), help_command=None)
 
